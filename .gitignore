@@ -1,0 +1,46 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.pnpm-debug.log*
+.env
+.env.*
+
+# Logs
+logs
+*.log
+*.log.*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+docker-compose.local.yml
+# Named volumes (if you ever mount them to the host)
+pg_data/
+pgadmin_data/
+
+# Database dumps/backups
+*.sql
+*.dump
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# Misc
+tmp/
