@@ -27,6 +27,7 @@ export function Hero() {
                     <li key={row.commander_name}>{row.commander_name}: {row.games_played} Games</li>
                 ))}
             </ol>
+            <p>{rows.toString()}</p>
         </>
       )}
     </div>

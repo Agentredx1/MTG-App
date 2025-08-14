@@ -1,15 +1,8 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.form {
+form {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #f8f9fa;
+  background: #626A6C;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
@@ -17,16 +10,16 @@
   flex-direction: column;
   gap: 1.2rem;
 }
-.form label {
+form label {
   display: flex;
   flex-direction: column;
   font-weight: 600;
-  color: #333;
+  color: hwb(201 0% 91%);
   gap: 0.3rem;
 }
 
-.form input,
-.form select {
+form input,
+form select {
   padding: 0.5rem 0.7rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -34,41 +27,41 @@
   transition: border-color 0.2s ease;
 }
 
-.form input:focus,
-.form select:focus {
+form input:focus,
+form select:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #1046dc;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
 }
 
-.form button {
+form button {
   padding: 0.6rem 1rem;
   font-size: 1rem;
   border: none;
   border-radius: 6px;
-  background: #007bff;
+  background: #6C8EEC;
   color: white;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
-.form button:hover {
+form button:hover {
   background: #0056b3;
 }
 
-.form fieldset.player {
+form fieldset.player {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 1rem;
-  background: #ffffff;
+  background: #838a8c;
 }
 
-.form legend {
+form legend {
   font-weight: bold;
   padding: 0 0.5rem;
 }
 
-.players {
+players {
   display: flex;
   flex-direction: column;
   gap: 1rem;
