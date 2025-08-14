@@ -22,12 +22,23 @@ export function Hero() {
       ) : (
         <>
             <h3>Most played commanders last 30 days:</h3>
-            <ol>
+            <table>
+            <thead>
+                <tr>
+                <th>Commander</th>
+                <th>Games</th>
+                </tr>
+            </thead>
+            <tbody>
                 {rows.map((row) => (
-                    <li key={row.commander_name}>{row.commander_name}: {row.games_played} Games</li>
+                <tr key={row.commander_name}>
+                    <td>{row.commander_name}</td>
+                    <td>{row.games_played}</td>
+                </tr>
                 ))}
-            </ol>
-            <p>{rows.toString()}</p>
+            </tbody>
+            </table>
+
         </>
       )}
     </div>

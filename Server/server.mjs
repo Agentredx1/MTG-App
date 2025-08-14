@@ -12,17 +12,9 @@ const pool = new Pool({
     port: 5432,
 });
 
-function assert(cond, msg) {
-    if (!cond) {
-        const e = new Error(msg);
-        e.status = 400;
-        throw e;
-    }
-}
-
-server.get('/', (request, response) => {
+server.get('/', (req, res) => {
     console.log("Request to root received");
-    response.status(200).set({'Content-Type': 'text/plain' }).send("I'm the responnse!");
+    res.status(200).set({'Content-Type': 'text/plain' }).send("I'm the responnse!");
 })
 
 
@@ -101,6 +93,74 @@ server.post('/api/game', async (req, res) => {
         client.release();
     }
 });
+
+
+//REVIEW
+// GET /api/test/scryfall?name=Card+Name
+server.get('/api/test/scryfall', async (req, res) => {
+  const name = (req.query.name || '').toString().trim();
+  if (!name) {
+    return res.status(400).json({ error: 'Missing ?name=' });
+  }
+
+  // Build Scryfall "named" endpoint (fuzzy match is more forgiving)
+  const url = new URL('https://api.scryfall.com/cards/named');
+  url.searchParams.set('fuzzy', name);
+
+  // Optional: timeout to avoid hanging
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
+  try {
+    const r = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        // Courtesy header (not required but recommended)
+        'User-Agent': 'mtg-library/1.0 (+https://example.com)'
+      }
+    });
+
+    // Scryfall returns JSON error bodies on non-2xx
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      return res.status(r.status).json({
+        error: err.details || err.message || 'Scryfall lookup failed'
+      });
+    }
+
+    const card = await r.json();
+
+    // Colors come straight from Scryfall
+    const color_identity = Array.isArray(card.color_identity) ? card.color_identity : [];
+
+    // Pick a representative image URL.
+    // Prefer the main face's "normal" size; fall back sensibly for multi-face cards.
+    let image = null;
+    if (card.image_uris?.normal) {
+      image = card.image_uris.normal;
+    } else if (Array.isArray(card.card_faces) && card.card_faces.length) {
+      const faceWithImage = card.card_faces.find(f => f.image_uris?.normal) || card.card_faces[0];
+      image = faceWithImage?.image_uris?.normal || null;
+    }
+
+    return res.json({
+      name: card.name,
+      color_identity,
+      image,
+      // Helpful extras (optional)
+      set: card.set,
+      type_line: card.type_line,
+      scryfall_uri: card.scryfall_uri,
+      id: card.id
+    });
+  } catch (e) {
+    const aborted = e?.name === 'AbortError';
+    return res.status(502).json({ error: aborted ? 'Scryfall request timed out' : 'Upstream request failed' });
+  } finally {
+    clearTimeout(timeout);
+  }
+});
+
 
 process.on('SIGINT', async () => {
   await pool.end();

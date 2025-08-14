@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AddGameForm from "./pages/AddGameForm.jsx";
+import Navigation from "./components/Navigation.jsx";
 import { Hero } from './components/Hero.jsx';
 import './App.css';
-import AddGameForm from './components/AddGameForm.jsx';
 function App() {
 
   return (
     <div>
-        <Hero></Hero>
-        <AddGameForm></AddGameForm>
+        <BrowserRouter>
+          <Navigation/>
+            <Routes>
+              <Route path="/" element={<Hero/>} />
+              <Route path="/AddGameForm" element={<AddGameForm />} />
+            </Routes>
+        </BrowserRouter>
     </div>
   );
 }
