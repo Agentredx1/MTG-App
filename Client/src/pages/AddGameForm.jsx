@@ -5,6 +5,7 @@ export default function AddGameForm(){
     const [players, setPlayers] = useState([]);
     const nextId = useRef(1);
     
+    
     function addPlayer() {
         setPlayers(ps => [...ps,
             {

@@ -38,7 +38,6 @@ export function Hero() {
                 ))}
             </tbody>
             </table>
-
         </>
       )}
     </div>

@@ -5,7 +5,7 @@ param(
 $PgCwd = "server"
 $PgCmd = "docker compose up -d"
 
-$ApiCwd = "server"
+$ApiCwd = "server/src"
 $ApiCmd = "node --watch-path=./ server.mjs"
 
 $WebCwd = "client"
