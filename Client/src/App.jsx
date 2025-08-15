@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AddGameForm from "./pages/AddGameForm.jsx";
 import Navigation from "./components/Navigation.jsx";
 import { Hero } from './components/Hero.jsx';
+import StatTable from './components/StatTable.jsx';
 import './App.css';
 function App() {
 
@@ -12,7 +13,8 @@ function App() {
           <Navigation/>
             <Routes>
               <Route path="/" element={<Hero/>} />
-              <Route path="/AddGameForm" element={<AddGameForm />} />
+              <Route path="/AddGameForm" element={<AddGameForm />}/>
+              <Route path="/StatTable" element={<StatTable/>}/>
             </Routes>
         </BrowserRouter>
     </div>

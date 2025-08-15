@@ -21,3 +21,43 @@ export async function getMostPlayed(req, res) {
     res.status(500).json({ error: 'Query failed' });
   }
 }
+
+export async function commanderWinRate(req, res){
+    try {
+        const result = await pool.query(`
+        SELECT
+        p.commander_name,
+        COUNT(*) FILTER (WHERE g.winner_player_id = p.player_id) AS wins,
+        COUNT(DISTINCT p.game_id) AS games
+        FROM players AS p
+        LEFT JOIN games AS g
+        ON g.winner_player_id = p.player_id
+        GROUP BY p.commander_name
+        ORDER BY wins DESC
+        `);
+        res.json(result.rows);
+    } catch (err) {
+    console.error('Query error', err);
+    res.status(500).json({ error: 'Query failed' });
+  }
+};
+
+export async function playerWinRate(req, res){
+    try {
+        const result = await pool.query(`
+        SELECT
+        p.player_name,
+        COUNT(*) FILTER (WHERE g.winner_player_id = p.player_id) AS wins,
+        COUNT(DISTINCT p.game_id) AS games
+        FROM players AS p
+        LEFT JOIN games AS g
+        ON g.winner_player_id = p.player_id
+        GROUP BY p.player_name
+        ORDER BY wins DESC
+        `);
+        res.json(result.rows);
+    } catch (err) {
+    console.error('Query error', err);
+    res.status(500).json({ error: 'Query failed' });
+  }
+};

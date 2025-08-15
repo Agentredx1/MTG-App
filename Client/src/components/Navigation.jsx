@@ -6,6 +6,7 @@ export default function Navigation(){
         <nav className="nav">
             <Link to="/">Home</Link>
             <Link to="/AddGameForm">Add Game</Link>
+            <Link to="/StatTable">Metrics</Link>
         </nav>
     )
 }

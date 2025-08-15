@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './Hero.css';
 
 export function Hero() {
   const [rows, setRows] = useState([]);
@@ -24,43 +25,8 @@ export function Hero() {
     setCurrentIndex((idx) => (idx === rows.length - 1 ? 0 : idx + 1));
   };
 
-  return (
+    return (
     <div>
-      {/* move this <style> block to your CSS later */}
-      <style>{`
-        .carousel {
-          position: relative;
-          max-width: 400px;
-          margin: 1rem auto;
-          overflow: hidden;
-        }
-        .carousel-img {
-          width: 100%;
-          height: auto;
-          display: block;
-        }
-        .carousel-nav {
-          position: absolute;
-          top: 50%;
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          transform: translateY(-50%);
-        }
-        .carousel-nav button {
-          background: rgba(0,0,0,0.5);
-          color: #fff;
-          border: none;
-          padding: 0.5rem 0.75rem;
-          font-size: 1rem;
-          cursor: pointer;
-        }
-        .carousel-caption {
-          text-align: center;
-          margin-top: 0.5rem;
-        }
-      `}</style>
-
       {rows.length === 0 ? (
         <p>Loading…</p>
       ) : (
@@ -69,26 +35,38 @@ export function Hero() {
           <div className="carousel">
             {rows[currentIndex].image && (
               <img
-                src={rows[currentIndex].image}
-                alt={rows[currentIndex].commander_name}
-                className="carousel-img"
+                src={rows[currentIndex - 1 < 0 ? rows.length - 1 : currentIndex - 1].image}
+                alt={rows[currentIndex - 1 < 0 ? rows.length - 1 : currentIndex - 1].commander_name}
+                className="carousel-left"
               />
             )}
+            {rows[currentIndex].image && (
+              <img
+                src={rows[currentIndex].image}
+                alt={rows[currentIndex].commander_name}
+                className="carousel-center"
+              />
+            )}
+            {rows[currentIndex].image && (
+              <img
+                src={rows[currentIndex + 1 > rows.length - 1 ? 0 : currentIndex + 1].image}
+                alt={rows[currentIndex + 1 > rows.length - 1 ? 0 : currentIndex + 1].commander_name}
+                className="carousel-right"
+              />
+            )}
+            <div className="carousel-caption">
+              <strong>{currentIndex + 1}. {rows[currentIndex].commander_name}</strong>
+              {typeof rows[currentIndex].games_played !== 'undefined' && (
+                <span> – {rows[currentIndex].games_played} games</span>
+              )}
+            </div>                        
             <div className="carousel-nav">
               <button onClick={prevSlide} aria-label="Previous commander">&lt;</button>
               <button onClick={nextSlide} aria-label="Next commander">&gt;</button>
             </div>
-          </div>
-          <div className="carousel-caption">
-            <strong>{rows[currentIndex].commander_name}</strong>
-            {typeof rows[currentIndex].games_played !== 'undefined' && (
-              <span> – {rows[currentIndex].games_played} games</span>
-            )}
           </div>
         </>
       )}
     </div>
   );
 }
-
-

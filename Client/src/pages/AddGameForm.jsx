@@ -54,6 +54,8 @@ export default function AddGameForm(){
             if(!res.ok){
                 const err = await res.json().catch(()=>({}));
                 throw new Error(err.error || 'Save game failed');
+            } else {
+                formRef.current.reset();
             }        
         } catch (err) {
             console.log(err);

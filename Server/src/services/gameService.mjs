@@ -1,6 +1,8 @@
 export async function createGameWithPlayers(client, payload) {
   const { date, turns, wincon, winner, players, num_players } = payload;
 
+  for(p in players){}
+
   const gameIns = await client.query(
     `INSERT INTO games (date, num_players, turns, wincon)
      VALUES ($1, $2, $3, $4)
@@ -26,8 +28,12 @@ export async function createGameWithPlayers(client, payload) {
 
   if (winnerRow) {
     await client.query(
-      `UPDATE games SET winner_player_id = $1 WHERE game_id = $2`,
-      [winnerRow.player_id, gameId]
+      `UPDATE games 
+        SET winner_player_id = $1
+        winner_name = $2
+        commander_name = $3
+        WHERE game_id = $4`,
+      [winnerRow.player_id, winnerRow.winner_name, winnerRow.commander_name, gameId]
     );
   } else {
     // Optional: leave NULL if unmatched
