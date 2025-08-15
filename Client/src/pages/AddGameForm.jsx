@@ -34,7 +34,7 @@ export default function AddGameForm(){
         const payload = {
             date: form.get('date'),
             turns: Number(form.get('turns')),
-            winCon: form.get('wincon'),
+            wincon: form.get('wincon'),
             winner: form.get('winner'),
             num_players: players.length,
             players: players.map(p => ({

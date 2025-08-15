@@ -19,12 +19,13 @@ export async function ensureCommandersExist(names) {
       const colors = (Array.isArray(card.color_identity) && card.color_identity.length)
         ? card.color_identity.map(c => String(c).toUpperCase().trim())
         : null;
-
+      const image = card.image;
+      console.log(card);
       await pool.query(
         `INSERT INTO commanders (commander_name, color_id)
          VALUES ($1, $2::char(1)[])
          ON CONFLICT (commander_name) DO NOTHING`,
-        [name, colors]
+        [name, colors, image]
       );
     } catch (e) {
       console.warn(`Scryfall failed for "${name}":`, e.message || e);

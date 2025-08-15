@@ -1,4 +1,3 @@
-// NEW: shared transaction helper
 export async function withTransaction(pool, fn) {
   const client = await pool.connect();
   try {

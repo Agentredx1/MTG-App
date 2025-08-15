@@ -1,4 +1,3 @@
-// NEW: moved /api/most_played here
 import { pool } from '../db/pool.mjs';
 
 export async function getMostPlayed(req, res) {
@@ -6,11 +5,13 @@ export async function getMostPlayed(req, res) {
     const result = await pool.query(`
       SELECT
         p.commander_name,
+        c.image,
         COUNT(*) AS games_played
       FROM "players" p
       JOIN "games"   g ON g."game_id" = p."game_id"
+      JOIN "commanders" c ON c."commander_name" = p."commander_name" 
       WHERE g."date" >= (CURRENT_DATE - INTERVAL '30 days')
-      GROUP BY p.commander_name
+      GROUP BY p.commander_name, c.image 
       ORDER BY games_played DESC
       LIMIT 8;
     `);
