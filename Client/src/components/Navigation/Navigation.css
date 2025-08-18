@@ -1,0 +1,63 @@
+/* ---- Navigation container --------------------------------------------- */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2rem);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem clamp(1rem, 4vw, 2rem);
+  box-shadow: var(--shadow);
+  position: sticky; /* optional: stays visible */
+  top: 0;
+  z-index: 50;
+}
+
+/* ---- Links ------------------------------------------------------------- */
+.nav a {
+  position: relative;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.25rem 0;
+  transition: color 0.18s ease;
+}
+
+/* Accent underline on hover/focus */
+.nav a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+.nav a:hover,
+.nav a:focus {
+  color: var(--accent-strong);
+}
+.nav a:hover::after,
+.nav a:focus::after {
+  width: 100%;
+}
+
+/* Active link styling (if you add .active with NavLink) */
+.nav a.active {
+  color: var(--accent-strong);
+}
+.nav a.active::after {
+  width: 100%;
+}
+
+/* ---- Mobile adjustments ------------------------------------------------ */
+@media (max-width: 640px) {
+  .nav {
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .nav a {
+    font-size: 0.95rem;
+  }
+}

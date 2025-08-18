@@ -1,0 +1,123 @@
+/* ---- Chart container --------------------------------------------------- */
+.chart {
+  --pip-size: 22px;                 /* icon size */
+  --bar-radius: 10px;
+  --bar-alpha: 0.85;
+
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0;                       /* ul reset */
+  list-style: none;
+}
+
+/* ---- Each bar row ------------------------------------------------------ */
+.chart li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  /* space for the pip icon on the left */
+  padding-left: calc(var(--pip-size) + 12px);
+  min-height: max(44px, var(--pip-size));
+  margin: 8px 0;
+
+  /* nice rounded background “track” */
+  background: color-mix(in srgb, var(--surface-alt) 75%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--bar-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Mana pip on the left */
+.chart li::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--pip-size);
+  height: var(--pip-size);
+  background: var(--pip-url) no-repeat center;
+  background-size: contain;
+  z-index: 2;
+}
+
+/* The filled portion of the bar */
+.chart li .bar {
+  position: absolute;
+  inset: 0;
+  width: var(--pct, 0%);
+  z-index: 1;
+  border-radius: var(--bar-radius);
+  opacity: var(--bar-alpha);
+  /* subtle gloss to bar color */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.12), rgba(0,0,0,0.06)),
+    var(--bar-color, #ddd);
+  transition: width .4s cubic-bezier(.22,1,.36,1), opacity .18s ease, filter .18s ease;
+}
+
+/* Label layer (above the bar) */
+.chart li .label {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+/* Count badge on the right */
+.chart .count {
+  font-variant-numeric: tabular-nums;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  box-shadow: var(--shadow);
+}
+
+/* Hover/Focus emphasizes the filled bar */
+@media (hover: hover) and (pointer: fine) {
+  .chart li:hover .bar,
+  .chart li:focus-within .bar {
+    opacity: 1;
+    filter: saturate(1.06);
+  }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  .chart {
+    --pip-size: 20px;
+  }
+  .chart li {
+    margin: 6px 0;
+  }
+  .chart li .label {
+    padding: 0.5rem 0.65rem;
+    font-weight: 600;
+  }
+  .chart .count {
+    padding: 0.15rem 0.5rem;
+  }
+}
+
+/* Motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  .chart li .bar { transition: none !important; }
+}
+
+/* ---- Color tokens per pip (you already had these) ---------------------- */
+.chart .white { --pip-url: url('/assets/mana-pips/pip-w.webp'); --bar-color: rgb(248,231,185); }
+.chart .blue  { --pip-url: url('/assets/mana-pips/pip-u.webp'); --bar-color: rgb(179,206,234); }
+.chart .black { --pip-url: url('/assets/mana-pips/pip-b.webp'); --bar-color: rgb(166,159,157); }
+.chart .red   { --pip-url: url('/assets/mana-pips/pip-r.webp'); --bar-color: rgb(235,159,130); }
+.chart .green { --pip-url: url('/assets/mana-pips/pip-g.webp'); --bar-color: rgb(196,211,202); }

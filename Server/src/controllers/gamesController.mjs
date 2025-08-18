@@ -4,9 +4,10 @@ import { ensureCommandersExist } from '../services/commanderService.mjs';
 import { createGameWithPlayers } from '../services/gameService.mjs';
 
 export async function createGame(req, res) {
-  const { date, turns, wincon, winner, players, num_players } = req.body;
-
+  const { date, turns, wincon, winner, players } = req.body;
+  const num_players = players.length;
   if (!date || !Number.isInteger(turns) || !wincon || !Array.isArray(players) || players.length < 2) {
+    console.log(!date, !Number.isInteger(turns), !wincon, !Array.isArray(players), players.length < 2);
     return res.status(400).json({ error: 'Invalid payload' });
   }
 

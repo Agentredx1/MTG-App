@@ -1,0 +1,99 @@
+/* ---- Carousel shell ---------------------------------------------------- */
+.carousel {
+  position: relative;
+  display: flex;             /* <-- side by side layout */
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: clamp(0.75rem, 2vw, 1rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* ---- Image deck -------------------------------------------------------- */
+.carousel img {
+  display: block;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  transition: transform .28s ease, opacity .28s ease, filter .28s ease;
+  background: var(--surface-alt);
+}
+
+/* Center image = hero card */
+.carousel-center {
+  aspect-ratio: 3 / 4;
+  width: clamp(180px, 40vw, 320px);
+  height: 80%;
+  max-height: min(72vh, 560px);
+  transform: scale(1);
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Side images = previews */
+.carousel-side {
+  aspect-ratio: 3 / 4;
+  width: clamp(88px, 18vw, 160px);
+  max-height: min(48vh, 360px);
+  opacity: 0.55;
+  filter: saturate(0.85);
+  transform: scale(0.94);
+  z-index: 1;
+}
+
+/* ---- Caption ----------------------------------------------------------- */
+.carousel-caption {
+  z-index: 3;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.55rem 0.8rem;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) 70%, transparent),
+    var(--surface)
+  );
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+}
+
+/* ---- Navigation controls ----------------------------------------------- */
+.carousel-nav {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+  pointer-events: none;
+}
+
+.carousel-nav button {
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent-strong);
+  box-shadow: var(--shadow);
+  transition: background .18s ease, transform .06s ease, border-color .18s ease;
+}
+.carousel-nav button:hover {
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+.carousel-nav button:active { transform: translateY(1px); }
+.carousel-nav button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  outline-offset: 2px;
+}

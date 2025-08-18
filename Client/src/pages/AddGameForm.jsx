@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
+import { useGameMeta } from '../contexts/GameMetaProvider';
 import './AddGameForm.css'
 
 export default function AddGameForm(){
-    const [players, setPlayers] = useState([]);
+    const { playerNames, commanderNames } = useGameMeta();
+    const [players, setPlayers] = useState([]); //for the players in the form
     const nextId = useRef(1);
-    
+    const formRef = useRef(null);    
     
     function addPlayer() {
         setPlayers(ps => [...ps,
@@ -43,6 +45,7 @@ export default function AddGameForm(){
                 turnOrder: Number(p.turnOrder)
             }))
         }
+
         console.log(payload);
         try {
             const res = await fetch('/api/game', {
@@ -62,8 +65,15 @@ export default function AddGameForm(){
         }
     }
 
-    return(
-    <form onSubmit={handleSubmit}>
+  return (
+    <form onSubmit={handleSubmit} ref={formRef}>
+      <datalist id="player-names">
+        {playerNames.map(n => <option key={n} value={n} />)}
+      </datalist>
+      <datalist id="commander-names">
+        {commanderNames.map(n => <option key={n} value={n} />)}
+      </datalist>
+
       <label>
         Game Date:
         <input type="date" name="date" />
@@ -86,14 +96,14 @@ export default function AddGameForm(){
         </select>
       </label>
 
-    <label>
+      <label>
         Winner:
-        <input type="text" name="winner"></input>
-    </label>
+        <input type="text" name="winner" list="player-names" />
+      </label>
 
-        <button type="button" onClick={addPlayer}>
-            + Add Player
-        </button>
+      <button type="button" onClick={addPlayer}>
+        + Add Player
+      </button>
 
       <div className="players">
         {players.map((p, i) => (
@@ -107,6 +117,7 @@ export default function AddGameForm(){
                 name={`players[${i}].name`}
                 value={p.name}
                 onChange={e => update(p.id, "name", e.target.value)}
+                list="player-names"          /* ← suggestions */
                 required
               />
             </label>
@@ -118,6 +129,7 @@ export default function AddGameForm(){
                 name={`players[${i}].commander`}
                 value={p.commander}
                 onChange={e => update(p.id, "commander", e.target.value)}
+                list="commander-names"       /* ← suggestions */
               />
             </label>
 
@@ -140,10 +152,8 @@ export default function AddGameForm(){
       </div>
 
       <div>
-        <button type="submit">
-          Save Game
-        </button>
+        <button type="submit">Save Game</button>
       </div>
     </form>
-    )
+  );
 }

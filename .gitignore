@@ -44,5 +44,5 @@ coverage/
 
 # Misc
 tmp/
-
+scratch/
 .config/

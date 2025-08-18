@@ -36,3 +36,5 @@ export async function getCardInfoByName(name, { exact = false, timeoutMs = 8000 
     clearTimeout(timer);
   }
 }
+
+//console.log(await getCardInfoByName("Cloud, Ex-SOLDIER"));

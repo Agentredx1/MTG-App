@@ -61,3 +61,25 @@ export async function playerWinRate(req, res){
     res.status(500).json({ error: 'Query failed' });
   }
 };
+
+export async function getColorFreq(req, res){
+    try {
+        const result = await pool.query(`
+        SELECT
+        col AS color,
+        COUNT(*) AS freq
+        FROM players p
+        JOIN commanders c
+        ON c.commander_name = p.commander_name
+        CROSS JOIN LATERAL unnest(c.color_id) AS u(col)
+        WHERE c.color_id IS NOT NULL
+        AND col IN ('W','U','B','R','G')
+        GROUP BY col
+        ORDER BY array_position(ARRAY['W','U','B','R','G'], col);
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Query error', err);
+        res.status(500).json({ error: 'Query failed' });
+    }
+};
