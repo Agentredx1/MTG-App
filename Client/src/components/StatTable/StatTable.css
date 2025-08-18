@@ -112,6 +112,15 @@
   font-weight: 600;
 }
 
+/* ---- Win Rate Color Coding ---------------------------------------------- */
+.table tbody tr.wr-high {
+  color: #ea580c; /* orange */
+}
+
+.table tbody tr.wr-too-high {
+  color: #dc2626; /* red */
+}
+
 /* ---- Compact mode for very wide data ----------------------------------- */
 @media (min-width: 1100px) {
   .table th,
