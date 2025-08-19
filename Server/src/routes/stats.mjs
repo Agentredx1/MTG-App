@@ -5,6 +5,6 @@ const router = Router();
 router.get('/most_played', getMostPlayed);
 router.get('/commanderWinRate', commanderWinRate);
 router.get('/playerWinRate', playerWinRate);
-router.get('/ColorFreq', getColorFreq)
+router.get('/ColorFreq', getColorFreq);
 export default router;
 

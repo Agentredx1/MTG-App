@@ -5,6 +5,7 @@ import Navigation from "./components/Navigation/Navigation.jsx";
 import { Hero } from './components/Hero/Hero.jsx';
 import Metrics from './pages/Metrics.jsx';
 import { GameMetaProvider } from './contexts/GameMetaProvider';
+import PlayerPage from './pages/PlayerPage.jsx';
 import './App.css';
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
               <Route path="/" element={<Hero/>} />
               <Route path="/AddGameForm" element={<AddGameForm />}/>
               <Route path="/Metrics" element={<Metrics/>}/>
+              <Route path="/PlayerPage" element={<PlayerPage/>}/>
             </Routes>
         </BrowserRouter>
         </GameMetaProvider>

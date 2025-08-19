@@ -42,21 +42,44 @@ export async function commanderWinRate(req, res){
   }
 };
 
-export async function playerWinRate(req, res){
-    try {
-        const result = await pool.query(`
-        SELECT
+export async function playerWinRate(req, res) {
+  try {
+    const { name } = req.query; // or req.params depending on how you call it
+
+    let query = `
+      SELECT
         p.player_name,
         COUNT(*) FILTER (WHERE g.winner_player_id = p.player_id) AS wins,
-        COUNT(DISTINCT p.game_id) AS games
-        FROM players AS p
-        LEFT JOIN games AS g
-        ON g.winner_player_id = p.player_id
-        GROUP BY p.player_name
-        ORDER BY wins DESC
-        `);
-        res.json(result.rows);
-    } catch (err) {
+        COUNT(*) AS games,
+        ROUND(
+          (COUNT(*) FILTER (WHERE g.winner_player_id = p.player_id)::numeric / NULLIF(COUNT(*), 0)) * 100, 
+          2
+        ) AS win_rate
+      FROM players AS p
+      JOIN games AS g
+        ON g.game_id = p.game_id
+    `;
+
+    const values = [];
+
+    if (name) {
+      query += ` WHERE p.player_name = $1`;
+      values.push(name);
+    }
+
+    query += `
+      GROUP BY p.player_name
+      ORDER BY wins DESC
+    `;
+
+    const result = await pool.query(query, values);
+
+    if (name) {
+      res.json(result.rows[0] || { error: 'Player not found' });
+    } else {
+      res.json(result.rows);
+    }
+  } catch (err) {
     console.error('Query error', err);
     res.status(500).json({ error: 'Query failed' });
   }
