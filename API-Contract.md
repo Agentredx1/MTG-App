@@ -1,22 +1,27 @@
 # MTG‑App API Contract
 
-This contract documents the public endpoints exposed by the **MTG‑App** server. The API uses Express and communicates over JSON. All paths below are relative to the /api base route.
+This contract documents the public endpoints exposed by the **MTG‑App** server. The API uses Express and communicates over JSON. All paths below are relative to the /api/v1 base route.
+
+**Note**: Many statistics endpoints support both collection queries (all items) and specific item queries using path parameters (e.g., `/stats/players/win-rate` vs `/stats/players/win-rate/:name`).
 
 ## Base URL
 
-/api
+/api/v1
 
 ## Endpoints Overview
 
 | Endpoint | Method | Description |
 | --- | --- | --- |
-| /game | POST | Create a new game and its player records[\[1\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/gamesController.mjs#L6-L21). |
-| /most_played | GET | Top eight commanders (last 30 days)[\[2\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L3-L18). |
-| /commanderWinRate | GET | Overall win counts per commander[\[3\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L25-L38). |
-| /playerWinRate | GET | Win rates per player; filter by name[\[4\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L45-L80). |
-| /ColorFreq | GET | Color identity frequency across commanders[\[5\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L88-L103). |
+| /games | POST | Create a new game and its player records[\[1\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/gamesController.mjs#L6-L21). |
+| /stats/most-played | GET | Top eight commanders (last 30 days)[\[2\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L3-L18). |
+| /stats/commanders/win-rate | GET | Overall win counts per commander[\[3\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L25-L38). |
+| /stats/commanders/win-rate/:name | GET | Win rates for specific commander by name[\[3\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L25-L38). |
+| /stats/players/win-rate | GET | Win rates per player[\[4\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L45-L80). |
+| /stats/players/win-rate/:name | GET | Win rates for specific player by name[\[4\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L45-L80). |
+| /stats/colors/frequency | GET | Color identity frequency across commanders[\[5\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L88-L103). |
+| /stats/colors/frequency/:name | GET | Color identity frequency for specific commander[\[5\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L88-L103). |
 
-## POST /api/game – Create a game
+## POST /api/v1/games – Create a game
 
 Creates a new game entry and inserts all participating players. The request body must contain:
 ```json
@@ -56,7 +61,7 @@ On success the API returns:
 - 201 Created is returned when the game is created successfully.
 - Errors: 400 Bad Request for invalid payloads; 500 Internal Server Error when an unexpected error occurs.
 
-## GET /api/most_played
+## GET /api/v1/stats/most-played
 
 Returns the top eight commanders with the highest number of games played in the last 30 days[\[2\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L3-L18). Each result contains:
 
@@ -73,7 +78,7 @@ Example response:
 
 Errors: - 500 Internal Server Error if the database query fails[\[9\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L18-L21).
 
-## GET /api/commanderWinRate
+## GET /api/v1/stats/commanders/win-rate
 
 Returns a list of commanders with their total wins and games played[\[3\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L25-L38). Each object includes:
 
@@ -90,9 +95,9 @@ Example:
 
 Errors: - 500 Internal Server Error on query failure[\[10\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L38-L42).
 
-## GET /api/playerWinRate
+## GET /api/v1/stats/players/win-rate
 
-Returns win statistics for players. Supports an optional query parameter:
+Returns win statistics for players. Can be called in two ways:
 
 - name (string) – If provided, the API returns statistics for only that player; otherwise, it returns all players sorted by win count[\[4\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L45-L80).
 
@@ -100,21 +105,21 @@ Each result (or the single object) contains: - player_name - wins – total game
 
 ### Examples
 
-1. **All players** (GET /api/playerWinRate):
+1. **All players** (GET /api/v1/stats/players/win-rate):
 
 ```json
 { "player_name": "Alice", "wins": 2, "games": 5, "win_rate": 40.0 },  
 { "player_name": "Bob", "wins": 1, "games": 4, "win_rate": 25.0 }  
 ```
 
-1. **Single player** (GET /api/playerWinRate?name=Alice):
+1. **Single player** (GET /api/v1/stats/players/win-rate/Alice):
 ```json
 { "player_name": "Alice", "wins": 2, "games": 5, "win_rate": 40.0 }
 ```
 - If the requested player is not found, the API returns { "error": "Player not found" }[\[12\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L77-L78).
 - Errors: 500 Internal Server Error when the query fails[\[13\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L82-L85).
 
-## GET /api/ColorFreq
+## GET /api/v1/stats/colors/frequency
 
 Returns the frequency of each color identity across all commanders[\[5\]](https://github.com/Agentredx1/MTG-App/blob/d8349b42ab60a0d4f5436bafd508d96e30f84680/Server/src/controllers/statsController.mjs#L88-L103). The colors follow the Magic: the Gathering color codes W, U, B, R, G. Each result has:
 
