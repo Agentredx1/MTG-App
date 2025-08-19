@@ -19,9 +19,9 @@ export function GameMetaProvider({ children }) {
         setError(null);
 
         const [playerRes, commanderRes, colorRes] = await Promise.all([
-          fetch('/api/playerWinRate', { signal: ac.signal }),
-          fetch('/api/commanderWinRate', { signal: ac.signal }),
-          fetch('/api/ColorFreq', { signal: ac.signal})
+          fetch('/api/v1/stats/players/win-rate', { signal: ac.signal }),
+          fetch('/api/v1/stats/commanders/win-rate', { signal: ac.signal }),
+          fetch('/api/v1/stats/colors/frequency', { signal: ac.signal})
         ]);
 
         if (!playerRes.ok) throw new Error(`playerWinRate ${playerRes.status}`);
@@ -70,7 +70,7 @@ export function GameMetaProvider({ children }) {
     commanderNames,
     // manual refresh
     refresh: async () => {
-      const [pr, cr] = await Promise.all([fetch('/api/playerWinRate'), fetch('/api/commanderWinRate')]);
+      const [pr, cr] = await Promise.all([fetch('/api/v1/stats/players/win-rate'), fetch('/api/commanderWinRate')]);
       setPlayers(pr.ok ? await pr.json() : []);
       setCommanders(cr.ok ? await cr.json() : []);
     }

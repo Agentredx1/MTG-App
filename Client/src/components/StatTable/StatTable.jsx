@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './StatTable.css';
-import { Link } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 
 function StatTable({type, data}){
     
@@ -19,9 +19,9 @@ function StatTable({type, data}){
           {data.map((row, index) => {
             const winRate = Math.round((row.wins / row.games) * 100);
             let className = '';
-            if (winRate >= 50) {
+            if (winRate >= 50 && row.games >= 5 ) {
               className = 'wr-too-high';
-            } else if (winRate >= 40) {
+            } else if (winRate >= 40 && row.games >= 6 ) {
               className = 'wr-high';
             }
 
@@ -31,10 +31,9 @@ function StatTable({type, data}){
             return (
               <tr key={index} className={className}>
                 <td data-label="name">{type=="Player" ? (
-                    <Link
-                      to={`/PlayerPage?name=${encodeURIComponent(displayName)}`}>
-                        {displayName}
-                    </Link>
+                  <Link to={`/Metrics/${encodeURIComponent(displayName)}`}>
+                    {displayName}
+                  </Link>
                 ) : ( displayName)}
                 </td>
                 <td data-label="Games Played">{row.games}</td>

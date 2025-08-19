@@ -15,8 +15,8 @@ server.get('/', (req, res) => {
 });
 
 
-server.use('/api', gamesRouter);
-server.use('/api', statsRouter);
+server.use('/api/v1', gamesRouter);
+server.use('/api/v1/stats', statsRouter);
 
 // Centralized error handler
 server.use((err, req, res, next) => {

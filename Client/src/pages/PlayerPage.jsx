@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import StatTable from '../components/StatTable/StatTable.jsx';
+import ColorTable from '../components/ColorTable/ColorTable.jsx';
 
 export default function PlayerPage() {
-  const [searchParams] = useSearchParams();
-  const name = searchParams.get('name') || '';
-
+  const { name } = useParams();
   const [playerData, setPlayerData] = useState([]);
   const [commanderData, setCommanderData] = useState([]); // if you have this endpoint
 
@@ -15,7 +14,7 @@ export default function PlayerPage() {
 
     (async () => {
       try {
-        const url = `/api/playerWinRate${name ? `?name=${encodeURIComponent(name)}` : ''}`;
+        const url = `/api/v1/stats/players/win-rate/${name ? name : ''}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
@@ -34,14 +33,13 @@ export default function PlayerPage() {
     return () => { ignore = true; };
   }, [name]);
 
-  /* Optional: commander stats for this player
   useEffect(() => {
     if (!name) return;
     let ignore = false;
 
     (async () => {
       try {
-        const res = await fetch(`/api/commanderStats?player=${encodeURIComponent(name)}`);
+        const res = await fetch(`/api/v1/stats/commanders/win-rate/${encodeURIComponent(name)}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!ignore) setCommanderData(Array.isArray(data) ? data : []);
@@ -53,12 +51,12 @@ export default function PlayerPage() {
 
     return () => { ignore = true; };
   }, [name]);
-*/
 
   return (
     <div>
-      <StatTable type="player" data={playerData} />
-      {/*<StatTable type="commander" data={commanderData} />*/}
+      <StatTable type="player" data={playerData}/>
+      <StatTable type="commander" data={commanderData}/>
+      <ColorTable name={name}></ColorTable>
     </div>
   );
 }

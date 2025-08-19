@@ -18,7 +18,7 @@ function App() {
               <Route path="/" element={<Hero/>} />
               <Route path="/AddGameForm" element={<AddGameForm />}/>
               <Route path="/Metrics" element={<Metrics/>}/>
-              <Route path="/PlayerPage" element={<PlayerPage/>}/>
+              <Route path="/Metrics/:name" element={<PlayerPage/>}/>
             </Routes>
         </BrowserRouter>
         </GameMetaProvider>

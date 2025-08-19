@@ -4,13 +4,14 @@ import './ColorTable.css';
 const WUBRG = ['W', 'U', 'B', 'R', 'G'];
 const LETTER_TO_NAME = { W: 'White', U: 'Blue', B: 'Black', R: 'Red', G: 'Green' };
 
-export default function ColorTable() {
+export default function ColorTable({name}) {
   const [colors, setColors] = useState([]);
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/colorFreq');
+        const res = await fetch(`/api/v1/stats/colors/frequency/${name ? name : ''}`);
+
         const raw = await res.json(); // [{ color: 'W', freq: '12' }, ...]
         const byLetter = new Map();
 

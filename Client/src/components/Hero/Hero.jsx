@@ -11,7 +11,7 @@ export function Hero() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/most_played');
+        const res = await fetch('/api/v1/stats/most-played');
         const data = await res.json();
         setRows(data || []);
       } catch (e) {
