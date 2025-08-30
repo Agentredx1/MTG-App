@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getMostPlayed, commanderWinRate, playerWinRate, getColorFreq, getGameFeed } from '../controllers/statsController.mjs';
+import { getMostPlayed, commanderWinRate, playerWinRate, getColorFreq, getGameFeed, getHeadToHead } from '../controllers/statsController.mjs';
 
 const router = Router();
 
@@ -16,6 +16,8 @@ router.get('/colors/frequency/:name', getColorFreq);
 
 router.get('/game-feed', getGameFeed);
 router.get('/game-feed/:name', getGameFeed);
+
+router.get('/players/head-to-head/:name', getHeadToHead);
 
 export default router;
 

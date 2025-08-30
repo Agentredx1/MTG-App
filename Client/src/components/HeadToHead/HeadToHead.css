@@ -1,0 +1,163 @@
+.head-to-head {
+  margin: 2rem 0;
+}
+
+.h2h-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+.h2h-table th,
+.h2h-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.h2h-table th {
+  background: var(--surface-alt);
+  font-weight: 600;
+}
+
+.details-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.detailed-matchup {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.matchup-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat label {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.stat span {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.recent-games-table {
+  margin-bottom: 2rem;
+}
+
+.h2h-games-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  font: 500 0.95rem/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.h2h-games-table thead th {
+  background: linear-gradient(0deg, var(--surface) 0%, var(--surface-alt) 100%);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  padding: 0.9rem 1rem;
+  text-align: left;
+}
+
+.h2h-games-table th,
+.h2h-games-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.h2h-games-table tbody td:nth-child(3),
+.h2h-games-table thead th:nth-child(3) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.h2h-games-table tbody td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.h2h-games-table tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--surface) 88%, var(--surface-alt));
+}
+
+.h2h-games-table tbody tr:hover td {
+  background: var(--row-hover);
+}
+
+/* HeadToHead specific game outcome styling - only affects leftmost cell */
+.h2h-game-row.win {
+  border-left: 4px solid #10b981;
+}
+
+.h2h-game-row.win td:first-child {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, var(--surface) 100%);
+}
+
+.h2h-game-row.win:hover td:first-child {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, var(--row-hover) 100%);
+}
+
+.h2h-game-row.loss {
+  border-left: 4px solid #ef4444;
+}
+
+.h2h-game-row.loss td:first-child {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, var(--surface) 100%);
+}
+
+.h2h-game-row.loss:hover td:first-child {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.25) 0%, var(--row-hover) 100%);
+}
+
+.h2h-game-row.other {
+  border-left: 4px solid #6b7280;
+}
+
+.h2h-game-row.other td:first-child {
+  background: linear-gradient(90deg, rgba(107, 114, 128, 0.15) 0%, var(--surface) 100%);
+}
+
+.h2h-game-row.other:hover td:first-child {
+  background: linear-gradient(90deg, rgba(107, 114, 128, 0.25) 0%, var(--row-hover) 100%);
+}
+
+.close-btn {
+  background: var(--muted);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}

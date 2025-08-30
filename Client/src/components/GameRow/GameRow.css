@@ -1,0 +1,247 @@
+/* Player Grid */
+.players-grid {
+  white-space: normal;
+  max-width: 300px;
+  padding: 0.6rem 1rem;
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.player-cell {
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in srgb, var(--surface) 90%, var(--surface-alt));
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.player-name {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.commander-name {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.player-cell.winner {
+  border: 2px solid var(--success);
+  background: color-mix(in srgb, var(--success) 10%, var(--surface));
+}
+
+.player-cell.winner .player-name {
+  color: var(--success);
+}
+
+.player-cell.winner .commander-name {
+  color: var(--success);
+  opacity: 0.8;
+}
+
+.wincon {
+  white-space: normal;
+  max-width: 150px;
+  font-size: 0.9rem;
+}
+
+/* Expanded Content */
+.expanded-content {
+  padding: 0;
+}
+
+.commander-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  max-width: 100%;
+}
+
+.commander-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.commander-card.winner {
+  border: 2px solid var(--success);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+.commander-info {
+  padding: 1rem;
+  background: var(--surface);
+}
+
+.commander-player-name {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.commander-card.winner .commander-player-name {
+  color: var(--success);
+}
+
+.commander-card-name {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.commander-image-container {
+  position: relative;
+  aspect-ratio: 5/3;
+  overflow: hidden;
+}
+
+.commander-image-container.clickable,
+.image-placeholder.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.commander-image-container.clickable:hover,
+.image-placeholder.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.commander-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.commander-card:hover .commander-image {
+  transform: scale(1.05);
+}
+
+.click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.commander-image-container.clickable:hover .click-overlay {
+  opacity: 1;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 5/3;
+  background: color-mix(in srgb, var(--surface) 70%, var(--muted));
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .players-grid {
+    max-width: none;
+  }
+  
+  .player-grid {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+  
+  .player-cell {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .wincon {
+    max-width: none;
+    font-size: 0.9rem;
+  }
+  
+  .commander-images {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .expanded-content {
+    padding: 1rem;
+  }
+  
+  .commander-card {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .commander-info {
+    flex: 1;
+    padding: 0.75rem;
+  }
+  
+  .commander-image-container {
+    width: 80px;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+  }
+  
+  .image-placeholder {
+    width: 80px;
+    aspect-ratio: 1;
+    font-size: 0.8rem;
+  }
+  
+  .click-overlay {
+    font-size: 0.7rem;
+    padding: 0.25rem;
+  }
+}
+
+/* Motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  .commander-card,
+  .commander-image,
+  .commander-image-container.clickable,
+  .image-placeholder.clickable,
+  .click-overlay {
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .commander-card:hover .commander-image,
+  .commander-image-container.clickable:hover,
+  .image-placeholder.clickable:hover {
+    transform: none !important;
+  }
+  
+  .commander-image-container.clickable:hover .click-overlay {
+    opacity: 0 !important;
+  }
+}

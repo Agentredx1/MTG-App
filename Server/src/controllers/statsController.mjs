@@ -219,3 +219,136 @@ export async function getGameFeed(req, res) {
         return res.status(500).json({ error: 'Query failed' });
     }
 }
+
+export async function getHeadToHead(req, res) {
+  try {
+    const playerName = req.params.name;
+    const vsPlayer = req.query.vs; // Optional: specific opponent
+
+    if (!playerName) {
+      return res.status(400).json({ error: 'Player name is required' });
+    }
+
+    let query, values;
+
+    if (vsPlayer) {
+      // Specific 1v1 matchup - get games where both players participated
+      query = `
+        WITH shared_games AS (
+          SELECT DISTINCT g1.game_id
+          FROM players p1
+          JOIN players p2 ON p1.game_id = p2.game_id
+          JOIN games g1 ON g1.game_id = p1.game_id
+          WHERE p1.player_name = $1 
+            AND p2.player_name = $2
+            AND p1.player_name != p2.player_name
+        ),
+        player_stats AS (
+          SELECT 
+            COUNT(*) as total_games,
+            COUNT(*) FILTER (WHERE g.winner_player_id = p1.player_id) as player1_wins,
+            COUNT(*) FILTER (WHERE g.winner_player_id = p2.player_id) as player2_wins,
+            ROUND(
+              (COUNT(*) FILTER (WHERE g.winner_player_id = p1.player_id))::numeric 
+              / NULLIF(COUNT(*), 0) * 100, 2
+            ) as player1_win_rate
+          FROM shared_games sg
+          JOIN games g ON g.game_id = sg.game_id
+          LEFT JOIN players p1 ON p1.game_id = g.game_id AND p1.player_name = $1
+          LEFT JOIN players p2 ON p2.game_id = g.game_id AND p2.player_name = $2
+        )
+        SELECT 
+          $1 as player1,
+          $2 as player2,
+          ps.total_games,
+          ps.player1_wins,
+          ps.player2_wins,
+          ps.player1_win_rate,
+          json_agg(
+            json_build_object(
+              'game_id', g.game_id,
+              'date', g.date,
+              'turns', g.turns,
+              'wincon', g.wincon,
+              'winner_name', g.winner_name,
+              'participants', (
+                SELECT json_agg(
+                  json_build_object(
+                    'player_id', p.player_id,
+                    'player_name', p.player_name,
+                    'commander_name', p.commander_name,
+                    'turn_order', p.turn_order,
+                    'is_winner', CASE WHEN p.player_id = g.winner_player_id THEN true ELSE false END
+                  ) ORDER BY p.turn_order
+                )
+                FROM players p 
+                WHERE p.game_id = g.game_id
+              )
+            ) ORDER BY g.date DESC
+          ) FILTER (WHERE g.game_id IS NOT NULL) as recent_games
+        FROM player_stats ps
+        CROSS JOIN shared_games sg
+        JOIN games g ON g.game_id = sg.game_id
+        GROUP BY ps.total_games, ps.player1_wins, ps.player2_wins, ps.player1_win_rate
+        LIMIT 1;
+      `;
+      values = [playerName, vsPlayer];
+    } else {
+      // All opponents for the player
+      query = `
+        WITH player_games AS (
+          SELECT 
+            p1.game_id,
+            p1.player_name as target_player,
+            p1.player_id as target_player_id,
+            g.winner_player_id,
+            g.date
+          FROM players p1
+          JOIN games g ON g.game_id = p1.game_id
+          WHERE p1.player_name = $1
+        ),
+        opponent_games AS (
+          SELECT 
+            pg.game_id,
+            pg.target_player,
+            pg.target_player_id,
+            p2.player_name as opponent,
+            p2.player_id as opponent_id,
+            pg.winner_player_id,
+            pg.date
+          FROM player_games pg
+          JOIN players p2 ON p2.game_id = pg.game_id
+          WHERE p2.player_name != pg.target_player
+        )
+        SELECT 
+          opponent,
+          COUNT(*) as games_played,
+          COUNT(*) FILTER (WHERE winner_player_id = og.target_player_id) as wins,
+          COUNT(*) FILTER (WHERE winner_player_id = og.opponent_id) as losses,
+          ROUND(
+            (COUNT(*) FILTER (WHERE winner_player_id = og.target_player_id))::numeric 
+            / NULLIF(COUNT(*), 0) * 100, 2
+          ) as win_rate,
+          MAX(date) as last_played
+        FROM opponent_games og
+        GROUP BY opponent
+        HAVING COUNT(*) > 0
+        ORDER BY games_played DESC, wins DESC;
+      `;
+      values = [playerName];
+    }
+
+    const result = await pool.query(query, values);
+    
+    if (vsPlayer && result.rows.length === 0) {
+      return res.status(404).json({ 
+        error: 'No games found between these players' 
+      });
+    }
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Head-to-head query error:', err);
+    res.status(500).json({ error: 'Query failed' });
+  }
+}

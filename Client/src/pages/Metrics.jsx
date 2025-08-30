@@ -10,7 +10,6 @@ export default function Metrics(){
         <div>
             <StatTable type='Player' data={players}></StatTable>
             <StatTable type='Commander' data={commanders}></StatTable>
-            <GameFeed></GameFeed>
         </div>
     )
 }

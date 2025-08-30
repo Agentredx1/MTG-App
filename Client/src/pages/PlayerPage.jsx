@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import StatTable from '../components/StatTable/StatTable.jsx';
 import ColorTable from '../components/ColorTable/ColorTable.jsx';
+import HeadToHead from '../components/HeadToHead/HeadToHead.jsx'; // New component
 
 export default function PlayerPage() {
   const { name } = useParams();
   const [playerData, setPlayerData] = useState([]);
-  const [commanderData, setCommanderData] = useState([]); // if you have this endpoint
+  const [commanderData, setCommanderData] = useState([]);
 
-  // Player win rate(s)
+  // Your existing useEffect hooks...
   useEffect(() => {
     let ignore = false;
 
@@ -20,7 +21,6 @@ export default function PlayerPage() {
         const data = await res.json();
 
         if (!ignore) {
-          // API returns a single object when name is provided; normalize to an array for StatTable
           const rows = Array.isArray(data) ? data : data ? [data] : [];
           setPlayerData(rows);
         }
@@ -54,9 +54,11 @@ export default function PlayerPage() {
 
   return (
     <div>
+      <h1>{name}'s Statistics</h1>
       <StatTable type="player" data={playerData}/>
       <StatTable type="commander" data={commanderData}/>
-      <ColorTable name={name}></ColorTable>
+      <ColorTable name={name}/>
+      <HeadToHead playerName={name}/>
     </div>
   );
 }
