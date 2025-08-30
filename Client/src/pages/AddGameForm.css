@@ -217,7 +217,106 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Datalist note: option styling is browser-limited */
 datalist { color: var(--text); }
 
+/* ---- Modal styles ------------------------------------------------------ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: var(--shadow);
+}
+
+.modal h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text);
+  font-size: 1.25rem;
+}
+
+.modal p {
+  margin: 0 0 1.5rem 0;
+  color: var(--muted);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.confirm-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s ease;
+}
+
+.confirm-btn:hover {
+  background: var(--accent-strong);
+}
+
+.cancel-btn {
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface-alt));
+  color: var(--danger-strong);
+  border: 1px solid var(--danger);
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s ease;
+}
+
+.cancel-btn:hover {
+  background: color-mix(in srgb, var(--danger) 20%, var(--surface-alt));
+}
+
+/* ---- Success message --------------------------------------------------- */
+.success-message {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: #10b981;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+  z-index: 1001;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
+  .success-message { animation: none !important; }
 }

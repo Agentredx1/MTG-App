@@ -38,7 +38,7 @@ export async function commanderWinRate(req, res) {
         , 2) AS win_rate
       FROM players AS p
       LEFT JOIN games AS g
-        ON g.game_id = p.game_id           -- ✅ join by game, not by winner id
+        ON g.game_id = p.game_id
     `;
 
     if (name) {
@@ -84,12 +84,13 @@ export async function playerWinRate(req, res) {
       FROM players AS p
       JOIN games AS g
         ON g.game_id = p.game_id
+      WHERE p.player_name NOT LIKE '%Guest%'
     `;
 
     const values = [];
 
     if (name) {
-      query += ` WHERE p.player_name = $1`;
+      query += ` AND p.player_name = $1`;
       values.push(name);
     }
 
@@ -152,4 +153,69 @@ export async function getColorFreq(req, res) {
   }
 }
 
+export async function getGameFeed(req, res) {
+    const nameRaw = req.params.name;
+    const name = typeof nameRaw === "string" ? nameRaw.trim() : "";
 
+    try {
+        let query = `
+            WITH game_participants AS (
+                SELECT 
+                    g.game_id,
+                    g.date,
+                    g.turns,
+                    g.wincon,
+                    g.winner_name,
+                    g.winner_player_id,
+                    json_agg(
+                        json_build_object(
+                            'player_id', p.player_id,
+                            'player_name', p.player_name,
+                            'commander_name', p.commander_name,
+                            'turn_order', p.turn_order,
+                            'is_winner', CASE WHEN p.player_id = g.winner_player_id THEN true ELSE false END
+                        ) ORDER BY p.turn_order
+                    ) AS participants
+                FROM games g
+                JOIN players p ON g.game_id = p.game_id
+                WHERE g.date IS NOT NULL
+        `;
+        
+        const values = [];
+        
+        if (name) {
+            query += ` AND EXISTS (
+                SELECT 1 FROM players p2 
+                WHERE p2.game_id = g.game_id 
+                AND p2.player_name ILIKE $1
+            )`;
+            values.push(`%${name}%`);
+        }
+        
+        query += `
+                GROUP BY g.game_id, g.date, g.turns, g.wincon, g.winner_name, g.winner_player_id
+            )
+            SELECT 
+                gp.game_id,
+                gp.date,
+                gp.turns,
+                gp.wincon,
+                gp.winner_name,
+                gp.participants
+            FROM game_participants gp
+            ORDER BY gp.date DESC, gp.game_id DESC
+            LIMIT 20
+        `;
+        
+        const result = await pool.query(query, values);
+        
+        if (name && result.rows.length === 0) {
+            return res.status(404).json({ error: 'No games found for player' });
+        }
+        
+        return res.json(result.rows);
+    } catch (err) {
+        console.error('Query error', err);
+        return res.status(500).json({ error: 'Query failed' });
+    }
+}

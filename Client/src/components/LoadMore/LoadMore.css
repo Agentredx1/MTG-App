@@ -1,0 +1,65 @@
+/* ---- Base tokens -------------------------------------------------------- */
+:root {
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --accent: #2563eb;
+  --shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #0b1220;
+    --surface-alt: #0f172a;
+    --text: #e5e7eb;
+    --muted: #94a3b8;
+    --border: #1f2937;
+    --accent: #60a5fa;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ---- Load More Component ------------------------------------------------ */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.load-more-btn {
+  background: var(--surface);
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.load-more-btn:hover {
+  background: var(--accent);
+  color: var(--surface);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.load-more-btn:active {
+  transform: translateY(0);
+}
+
+/* ---- Motion sensitivity ------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .load-more-btn {
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .load-more-btn:hover {
+    transform: none !important;
+  }
+}

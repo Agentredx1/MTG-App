@@ -5,9 +5,13 @@ import './AddGameForm.css'
 export default function AddGameForm(){
     const { playerNames, commanderNames } = useGameMeta();
     const [players, setPlayers] = useState([]); //for the players in the form
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [formData, setFormData] = useState(null);
     const nextId = useRef(1);
     const formRef = useRef(null);    
     
+    //Adds player object to players array, maps HTML for each
     function addPlayer() {
         setPlayers(ps => [...ps,
             {
@@ -19,23 +23,28 @@ export default function AddGameForm(){
         ]);
     };
 
+    //Removes player from array
     function removePlayer(id) {
         setPlayers(
             ps => ps.filter(p => p.id !== id).map((p,i) => ({...p, turnOrder: i + 1}))
         );
     };
 
+    //update 
     function update(id, field, value) {
         setPlayers(ps => ps.map(p => (p.id === id ? { ...p, [field]: value } : p)));
     }
     
-    async function handleSubmit(e){
+    function handleSubmit(e){
         e.preventDefault();
         const form = new FormData(e.currentTarget);
 
+        const turnsValue = form.get('turns');
+        const turnsNumber = Number(turnsValue);
+
         const payload = {
             date: form.get('date'),
-            turns: Number(form.get('turns')),
+            turns: (!turnsValue || turnsNumber < 0) ? null : turnsNumber,
             wincon: form.get('wincon'),
             winner: form.get('winner'),
             num_players: players.length,
@@ -46,33 +55,75 @@ export default function AddGameForm(){
             }))
         }
 
-        console.log(payload);
+        setFormData(payload);
+        setShowConfirmation(true);
+    }
+
+    async function confirmSubmit(){
         try {
-            const res = await fetch('/api/game', {
+            const res = await fetch('/api/v1/games', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
+                body: JSON.stringify(formData)
             });
 
             if(!res.ok){
                 const err = await res.json().catch(()=>({}));
                 throw new Error(err.error || 'Save game failed');
             } else {
+                setShowConfirmation(false);
+                setShowSuccess(true);
+                //Reset form and clear players
                 formRef.current.reset();
+                setPlayers([]);
+                setFormData(null);
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => setShowSuccess(false), 3000);
             }        
         } catch (err) {
             console.log(err);
+            setShowConfirmation(false);
         }
     }
 
+    function cancelSubmit(){
+        setShowConfirmation(false);
+        setFormData(null);
+    }
+
   return (
-    <form onSubmit={handleSubmit} ref={formRef}>
-      <datalist id="player-names">
-        {playerNames.map(n => <option key={n} value={n} />)}
-      </datalist>
-      <datalist id="commander-names">
-        {commanderNames.map(n => <option key={n} value={n} />)}
-      </datalist>
+    <>
+      {showConfirmation && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Confirm Game Submission</h3>
+            <p>Are you sure you want to submit this game?</p>
+            <div className="modal-buttons">
+              <button type="button" onClick={confirmSubmit} className="confirm-btn">
+                Yes, Submit Game
+              </button>
+              <button type="button" onClick={cancelSubmit} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {showSuccess && (
+        <div className="success-message">
+          Game submitted successfully! 🎉
+        </div>
+      )}
+      
+      <form onSubmit={handleSubmit} ref={formRef}>
+        <datalist id="player-names">
+          {playerNames.map(n => <option key={n} value={n} />)}
+        </datalist>
+        <datalist id="commander-names">
+          {commanderNames.map(n => <option key={n} value={n} />)}
+        </datalist>
 
       <label>
         Game Date:
@@ -81,7 +132,7 @@ export default function AddGameForm(){
 
       <label>
         Turn Count:
-        <input type="number" name="turns" min="1" />
+        <input type="number" name="turns" min="0" />
       </label>
 
       <label>
@@ -117,7 +168,7 @@ export default function AddGameForm(){
                 name={`players[${i}].name`}
                 value={p.name}
                 onChange={e => update(p.id, "name", e.target.value)}
-                list="player-names"          /* ← suggestions */
+                list="player-names"
                 required
               />
             </label>
@@ -129,7 +180,7 @@ export default function AddGameForm(){
                 name={`players[${i}].commander`}
                 value={p.commander}
                 onChange={e => update(p.id, "commander", e.target.value)}
-                list="commander-names"       /* ← suggestions */
+                list="commander-names"
               />
             </label>
 
@@ -151,9 +202,10 @@ export default function AddGameForm(){
         ))}
       </div>
 
-      <div>
-        <button type="submit">Save Game</button>
-      </div>
-    </form>
+        <div>
+          <button type="submit">Save Game</button>
+        </div>
+      </form>
+    </>
   );
 }

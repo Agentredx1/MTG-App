@@ -1,0 +1,292 @@
+/* ---- Base tokens -------------------------------------------------------- */
+:root {
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --accent: #2563eb;
+  --row-hover: #eef2ff;
+  --shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
+  --success: #059669;
+  --warning: #d97706;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #0b1220;
+    --surface-alt: #0f172a;
+    --text: #e5e7eb;
+    --muted: #94a3b8;
+    --border: #1f2937;
+    --accent: #60a5fa;
+    --row-hover: #111827;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --success: #10b981;
+    --warning: #f59e0b;
+  }
+}
+
+/* ---- Container ---------------------------------------------------------- */
+.game-feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: clamp(1rem, 3vw, 2.5rem);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.game-feed-container::-webkit-scrollbar {
+  height: 10px;
+}
+.game-feed-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.game-feed-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+/* ---- Loading and Error States ------------------------------------------- */
+.loading,
+.error,
+.no-games {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.error {
+  color: #dc2626;
+}
+
+/* ---- Table -------------------------------------------------------------- */
+.game-feed-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  font: 500 0.95rem/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Sticky header */
+.game-feed-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(0deg, var(--surface) 0%, var(--surface-alt) 100%);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Cells */
+.game-feed-table th,
+.game-feed-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Align numeric columns (Turns - now 3rd column) */
+.game-feed-table tbody td:nth-child(3),
+.game-feed-table thead th:nth-child(3) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Date column */
+.game-feed-table tbody td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+/* Player Grid - replaces separate Players/Commanders columns */
+.game-feed-table .players-grid {
+  white-space: normal;
+  max-width: 300px;
+  padding: 0.6rem 1rem;
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.player-cell {
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in srgb, var(--surface) 90%, var(--surface-alt));
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.player-name {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.commander-name {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+/* Winner player cell styling */
+.player-cell.winner {
+  border: 2px solid var(--success);
+  background: color-mix(in srgb, var(--success) 10%, var(--surface));
+}
+
+.player-cell.winner .player-name {
+  color: var(--success);
+}
+
+.player-cell.winner .commander-name {
+  color: var(--success);
+  opacity: 0.8;
+}
+
+/* Win condition column */
+.game-feed-table .wincon {
+  white-space: normal;
+  max-width: 150px;
+  font-size: 0.9rem;
+}
+
+/* Zebra and hover */
+.game-feed-table tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--surface) 88%, var(--surface-alt));
+}
+.game-feed-table tbody tr:hover td {
+  background: var(--row-hover);
+}
+
+/* Focus within (keyboard users) */
+.game-feed-table tbody tr:focus-within td {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* ---- Compact mode for very wide data ----------------------------------- */
+@media (min-width: 1200px) {
+  .game-feed-table th,
+  .game-feed-table td {
+    padding: 0.8rem 0.9rem;
+  }
+  
+  .game-feed-table .players-grid {
+    max-width: 350px;
+  }
+  
+  .game-feed-table .wincon {
+    max-width: 180px;
+  }
+}
+
+/* ---- Mobile card layout ------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Turn table into stacked cards */
+  .game-feed-table,
+  .game-feed-table thead,
+  .game-feed-table tbody,
+  .game-feed-table th,
+  .game-feed-table td,
+  .game-feed-table tr {
+    display: block;
+  }
+
+  .game-feed-table {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .game-feed-table thead {
+    /* hide header */
+    position: absolute;
+    width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+
+  .game-feed-table tbody tr {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .game-feed-table tbody td {
+    display: grid;
+    grid-template-columns: 8ch 1fr;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border: none;
+    border-top: 1px solid var(--border);
+    white-space: normal;
+  }
+
+  .game-feed-table tbody tr > td:first-child {
+    border-top: none;
+  }
+
+  .game-feed-table tbody td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  /* Reset text alignment for mobile */
+  .game-feed-table tbody td:nth-child(3) {
+    text-align: left;
+  }
+  
+  /* Adjust player grid for mobile cards */
+  .game-feed-table .players-grid {
+    max-width: none;
+  }
+  
+  .player-grid {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+  
+  .player-cell {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .game-feed-table .wincon {
+    max-width: none;
+    font-size: 0.9rem;
+  }
+}
+
+/* ---- Motion sensitivity ------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .game-feed-table tbody tr,
+  .game-feed-table tbody td {
+    transition: none !important;
+  }
+}

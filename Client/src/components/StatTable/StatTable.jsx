@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import './StatTable.css';
 import { Link, generatePath } from 'react-router-dom';
+import LoadMore from '../LoadMore/LoadMore';
 
 function StatTable({type, data}){
+    const [displayCount, setDisplayCount] = useState(10);
+    
+    const displayedData = data.slice(0, displayCount);
     
   return (
     <div className="table-container">
@@ -16,7 +20,7 @@ function StatTable({type, data}){
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => {
+          {displayedData.map((row, index) => {
             const winRate = Math.round((row.wins / row.games) * 100);
             let className = '';
             if (winRate >= 50 && row.games >= 5 ) {
@@ -44,6 +48,10 @@ function StatTable({type, data}){
           })}
         </tbody>
       </table>
+      <LoadMore 
+        onLoadMore={() => setDisplayCount(prev => prev + 10)}
+        remainingCount={data.length - displayCount}
+      />
     </div>
   );
 };

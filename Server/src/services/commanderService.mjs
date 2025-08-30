@@ -22,8 +22,8 @@ export async function ensureCommandersExist(names) {
       const image = card.image;
       console.log(card);
       await pool.query(
-        `INSERT INTO commanders (commander_name, color_id)
-         VALUES ($1, $2::char(1)[])
+        `INSERT INTO commanders (commander_name, color_id, image)
+         VALUES ($1, $2::char(1)[], $3)
          ON CONFLICT (commander_name) DO NOTHING`,
         [name, colors, image]
       );
