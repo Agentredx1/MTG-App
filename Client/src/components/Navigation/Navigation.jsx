@@ -7,6 +7,7 @@ export default function Navigation(){
             <Link to="/">Home</Link>
             <Link to="/AddGameForm">Add Game</Link>
             <Link to="/Metrics">Metrics</Link>
+            <Link to="/GameFeed">Game Feed</Link>
         </nav>
     )
 }

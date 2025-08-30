@@ -6,6 +6,7 @@ import { Hero } from './components/Hero/Hero.jsx';
 import Metrics from './pages/Metrics.jsx';
 import { GameMetaProvider } from './contexts/GameMetaProvider';
 import PlayerPage from './pages/PlayerPage.jsx';
+import GameFeedPage from './pages/GameFeedPage.jsx';
 import './App.css';
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
               <Route path="/AddGameForm" element={<AddGameForm />}/>
               <Route path="/Metrics" element={<Metrics/>}/>
               <Route path="/Metrics/:name" element={<PlayerPage/>}/>
+              <Route path="/GameFeed" element={<GameFeedPage/>}/>
             </Routes>
         </BrowserRouter>
         </GameMetaProvider>

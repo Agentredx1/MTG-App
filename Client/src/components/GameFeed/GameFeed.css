@@ -182,6 +182,169 @@
   outline-offset: -2px;
 }
 
+/* Clickable game rows */
+.game-row {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.game-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.game-row.expanded {
+  background: var(--row-hover);
+}
+
+/* Expanded row content */
+.expanded-row {
+  animation: expandRow 0.3s ease-out;
+}
+
+.expanded-cell {
+  padding: 0 !important;
+  background: var(--surface-alt);
+  border-top: 1px solid var(--border);
+}
+
+.expanded-content {
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.commander-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  max-width: 100%;
+}
+
+.commander-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.commander-card.winner {
+  border: 2px solid var(--success);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+.commander-info {
+  padding: 1rem;
+  background: var(--surface);
+}
+
+.commander-player-name {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.commander-card.winner .commander-player-name {
+  color: var(--success);
+}
+
+.commander-card-name {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.commander-image-container {
+  position: relative;
+  aspect-ratio: 5/3;
+  overflow: hidden;
+}
+
+.commander-image-container.clickable,
+.image-placeholder.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.commander-image-container.clickable:hover,
+.image-placeholder.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.commander-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.commander-card:hover .commander-image {
+  transform: scale(1.05);
+}
+
+/* Click overlay for commander images */
+.click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.commander-image-container.clickable:hover .click-overlay {
+  opacity: 1;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 5/3;
+  background: color-mix(in srgb, var(--surface) 70%, var(--muted));
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Animations */
+@keyframes expandRow {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ---- Compact mode for very wide data ----------------------------------- */
 @media (min-width: 1200px) {
   .game-feed-table th,
@@ -281,12 +444,72 @@
     max-width: none;
     font-size: 0.9rem;
   }
+  
+  /* Mobile adjustments for expanded content */
+  .commander-images {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .expanded-content {
+    padding: 1rem;
+  }
+  
+  .commander-card {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .commander-info {
+    flex: 1;
+    padding: 0.75rem;
+  }
+  
+  .commander-image-container {
+    width: 80px;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+  }
+  
+  .image-placeholder {
+    width: 80px;
+    aspect-ratio: 1;
+    font-size: 0.8rem;
+  }
+  
+  /* Mobile click overlay adjustments */
+  .click-overlay {
+    font-size: 0.7rem;
+    padding: 0.25rem;
+  }
 }
 
 /* ---- Motion sensitivity ------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .game-feed-table tbody tr,
-  .game-feed-table tbody td {
+  .game-feed-table tbody td,
+  .game-row,
+  .commander-card,
+  .commander-image,
+  .commander-image-container.clickable,
+  .image-placeholder.clickable,
+  .click-overlay {
     transition: none !important;
+    transform: none !important;
+  }
+  
+  .expanded-row,
+  .expanded-content {
+    animation: none !important;
+  }
+  
+  .commander-card:hover .commander-image,
+  .commander-image-container.clickable:hover,
+  .image-placeholder.clickable:hover {
+    transform: none !important;
+  }
+  
+  .commander-image-container.clickable:hover .click-overlay {
+    opacity: 0 !important;
   }
 }
