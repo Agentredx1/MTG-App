@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './GameFeed.css';
 import LoadMore from '../LoadMore/LoadMore';
 import CommanderModal from '../CommanderModal/CommanderModal.jsx';
+import ExpandableRow from '../ExpandableRow/ExpandableRow';
 
 function GameFeed({ playerName = null }) {
   const [games, setGames] = useState([]);
@@ -180,30 +181,26 @@ function GameFeed({ playerName = null }) {
           {displayedGames.map((game) => {
             const isExpanded = expandedRows.has(game.game_id);
             return (
-              <React.Fragment key={game.game_id}>
-                <tr 
-                  className={`game-row ${isExpanded ? 'expanded' : ''}`}
-                  onClick={() => toggleRowExpansion(game.game_id)}
-                >
-                  <td data-label="Date">{formatDate(game.date)}</td>
-                  <td data-label="Players" className="players-grid">
-                    <div className="player-grid">
-                      {formatPlayerGrid(game.participants, game.winner_name)}
-                    </div>
-                  </td>
-                  <td data-label="Turns">{game.turns || '-'}</td>
-                  <td data-label="Win Condition" className="wincon">
-                    {game.wincon || '-'}
-                  </td>
-                </tr>
-                {isExpanded && (
-                  <tr className="expanded-row">
-                    <td colSpan="4" className="expanded-cell">
-                      {renderExpandedContent(game)}
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
+              <ExpandableRow
+                key={game.game_id}
+                id={game.game_id}
+                isExpanded={isExpanded}
+                onToggle={toggleRowExpansion}
+                colSpan={4}
+                className="game-row"
+                expandedContent={renderExpandedContent(game)}
+              >
+                <td data-label="Date">{formatDate(game.date)}</td>
+                <td data-label="Players" className="players-grid">
+                  <div className="player-grid">
+                    {formatPlayerGrid(game.participants, game.winner_name)}
+                  </div>
+                </td>
+                <td data-label="Turns">{game.turns || '-'}</td>
+                <td data-label="Win Condition" className="wincon">
+                  {game.wincon || '-'}
+                </td>
+              </ExpandableRow>
             );
           })}
         </tbody>

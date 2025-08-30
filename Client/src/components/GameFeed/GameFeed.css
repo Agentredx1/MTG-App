@@ -182,35 +182,9 @@
   outline-offset: -2px;
 }
 
-/* Clickable game rows */
-.game-row {
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.game-row:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.game-row.expanded {
-  background: var(--row-hover);
-}
-
-/* Expanded row content */
-.expanded-row {
-  animation: expandRow 0.3s ease-out;
-}
-
-.expanded-cell {
-  padding: 0 !important;
-  background: var(--surface-alt);
-  border-top: 1px solid var(--border);
-}
-
+/* GameFeed specific expanded content styling */
 .expanded-content {
-  padding: 1.5rem;
-  animation: fadeIn 0.3s ease-out;
+  padding: 0; /* Remove padding since ExpandableRow component handles this */
 }
 
 .commander-images {
@@ -322,28 +296,6 @@
   font-style: italic;
 }
 
-/* Animations */
-@keyframes expandRow {
-  from {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 /* ---- Compact mode for very wide data ----------------------------------- */
 @media (min-width: 1200px) {
@@ -488,7 +440,6 @@
 @media (prefers-reduced-motion: reduce) {
   .game-feed-table tbody tr,
   .game-feed-table tbody td,
-  .game-row,
   .commander-card,
   .commander-image,
   .commander-image-container.clickable,
@@ -496,11 +447,6 @@
   .click-overlay {
     transition: none !important;
     transform: none !important;
-  }
-  
-  .expanded-row,
-  .expanded-content {
-    animation: none !important;
   }
   
   .commander-card:hover .commander-image,
