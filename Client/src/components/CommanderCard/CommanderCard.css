@@ -1,0 +1,356 @@
+.commander-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+  align-self: flex-start;
+}
+
+.commander-left {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.commander-card.expanded {
+  flex-direction: row;
+  flex: 1.5;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.commander-card.expanded .commander-left {
+  flex-shrink: 0;
+  width: 200px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.commander-card:not(.expanded) .commander-left {
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.commander-card.winner {
+  border: 2px solid var(--success);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+.commander-info {
+  padding: 1rem;
+  background: var(--surface);
+}
+
+.commander-player-name {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.commander-card.winner .commander-player-name {
+  color: var(--success);
+}
+
+.commander-card-name {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.commander-image-container {
+  position: relative;
+  aspect-ratio: 5/3;
+  overflow: hidden;
+  flex-shrink: 0;
+  max-width: 100%;
+  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.commander-card.expanded .commander-image-container {
+  max-width: 100%;
+}
+
+.commander-details {
+  padding: 1rem;
+  background: var(--surface-alt);
+  font-size: 0.875rem;
+  color: var(--muted);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  opacity: 0;
+  min-height: 0;
+  overflow: hidden;
+  min-width: 0;
+  max-width: 300px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.commander-details.visible {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.commander-card:not(.expanded) .commander-details {
+  border-top: 1px solid var(--border);
+}
+
+.commander-card.expanded .commander-details {
+  border-left: 1px solid var(--border);
+}
+
+.commander-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.commander-card:hover .commander-image {
+  transform: scale(1.05);
+}
+
+.click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.commander-card:hover .click-overlay {
+  opacity: 1;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 5/3;
+  background: color-mix(in srgb, var(--surface) 70%, var(--muted));
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Card details styling */
+.loading-details, .error-details {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mana-cost {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.cmc {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.75rem;
+}
+
+.card-type {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.color-identity {
+  margin-bottom: 0.75rem;
+}
+
+.color-identity strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.color-symbols {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.oracle-text {
+  line-height: 1.4;
+  flex: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  height: auto;
+  min-height: fit-content;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: normal;
+}
+
+.oracle-text p {
+  margin: 0 0 0.5rem 0;
+}
+
+.oracle-text p:last-child {
+  margin-bottom: 0;
+}
+
+.oracle-text p:empty {
+  margin: 0;
+}
+
+/* Mana pip styling */
+.mana-pip {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Text fallback for non-color symbols */
+.mana-symbol-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .commander-card.expanded {
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .commander-card:not(.expanded) {
+    flex-direction: row;
+    align-items: center;
+    min-height: fit-content;
+  }
+  
+  .commander-left {
+    flex: 1;
+    padding: 0.75rem;
+  }
+  
+  .commander-card:not(.expanded) .commander-left {
+    flex: 1;
+  }
+  
+  .commander-card.expanded .commander-left {
+    flex: none;
+    width: 100%;
+  }
+  
+  .commander-image-container {
+    width: 80px;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+  }
+  
+  .commander-card.expanded .commander-image-container {
+    width: 100%;
+    aspect-ratio: 5/3;
+  }
+  
+  .image-placeholder {
+    width: 80px;
+    aspect-ratio: 1;
+    font-size: 0.8rem;
+  }
+  
+  .commander-card.expanded .image-placeholder {
+    width: 100%;
+    aspect-ratio: 5/3;
+  }
+  
+  .commander-details {
+    padding: 1rem;
+  }
+  
+  .click-overlay {
+    font-size: 0.7rem;
+    padding: 0.25rem;
+  }
+}
+
+/* Motion sensitivity */
+@media (prefers-reduced-motion: reduce) {
+  .commander-card,
+  .commander-image,
+  .click-overlay,
+  .commander-left {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  
+  .commander-card:hover .commander-image {
+    transform: none !important;
+  }
+  
+  .commander-card:hover .click-overlay {
+    opacity: 0 !important;
+  }
+  
+  .commander-details {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

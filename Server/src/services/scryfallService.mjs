@@ -30,7 +30,10 @@ export async function getCardInfoByName(name, { exact = false, timeoutMs = 8000 
       set: card.set,
       type_line: card.type_line,
       scryfall_uri: card.scryfall_uri,
-      id: card.id
+      id: card.id,
+      mana_cost: card.mana_cost || '',
+      cmc: card.cmc || 0,
+      oracle_text: card.oracle_text || ''
     };
   } finally {
     clearTimeout(timer);

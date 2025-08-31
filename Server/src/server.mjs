@@ -1,6 +1,7 @@
 import express from 'express';
 import gamesRouter from './routes/games.mjs';
 import statsRouter from './routes/stats.mjs';
+import cardsRouter from './routes/cards.mjs';
 import { pool } from './db/pool.mjs';
 
 const server = express();
@@ -17,6 +18,7 @@ server.get('/', (req, res) => {
 
 server.use('/api/v1', gamesRouter);
 server.use('/api/v1/stats', statsRouter);
+server.use('/api/v1/cards', cardsRouter);
 
 // Centralized error handler
 server.use((err, req, res, next) => {

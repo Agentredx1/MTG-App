@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './GameRow.css';
 import ExpandableRow from '../ExpandableRow/ExpandableRow';
+import CommanderCard from '../CommanderCard/CommanderCard.jsx';
 
 function GameRow({ 
   game, 
@@ -9,6 +10,12 @@ function GameRow({
   onCommanderClick,
   className = ""
 }) {
+  const [expandedCommanderId, setExpandedCommanderId] = useState(null);
+
+  const handleCommanderCardClick = (participantId) => {
+    setExpandedCommanderId(prev => prev === participantId ? null : participantId);
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
@@ -38,48 +45,16 @@ function GameRow({
         <div className="commander-images">
           {sortedParticipants.map((participant, index) => {
             const isWinner = participant.player_name === game.winner_name;
-            const commanderName = participant.commander_name || 'Unknown';
-            const imageUrl = commanderName !== 'Unknown' 
-              ? `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(commanderName)}&format=image&version=art_crop`
-              : null;
+            const isExpanded = expandedCommanderId === participant.player_id;
             
             return (
-              <div key={index} className={`commander-card ${isWinner ? 'winner' : ''}`}>
-                <div className="commander-info">
-                  <h4 className="commander-player-name">{participant.player_name}</h4>
-                  <p className="commander-card-name">{commanderName}</p>
-                </div>
-                {imageUrl ? (
-                  <div 
-                    className="commander-image-container clickable"
-                    onClick={() => onCommanderClick(commanderName, participant.player_name)}
-                  >
-                    <img 
-                      src={imageUrl} 
-                      alt={commanderName}
-                      className="commander-image"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
-                    />
-                    <div className="image-placeholder" style={{display: 'none'}}>
-                      <span>Image not available</span>
-                    </div>
-                    <div className="click-overlay">
-                      <span>Click to view details</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div 
-                    className="image-placeholder clickable"
-                    onClick={() => onCommanderClick(commanderName, participant.player_name)}
-                  >
-                    <span>No commander</span>
-                    <small>Click to view details</small>
-                  </div>
-                )}
-              </div>
+              <CommanderCard
+                key={index}
+                participant={participant}
+                isWinner={isWinner}
+                isExpanded={isExpanded}
+                onToggleExpansion={handleCommanderCardClick}
+              />
             );
           })}
         </div>
