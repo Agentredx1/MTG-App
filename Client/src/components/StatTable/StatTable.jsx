@@ -5,6 +5,7 @@ import LoadMore from '../LoadMore/LoadMore';
 import ExpandableRow from '../ExpandableRow/ExpandableRow';
 import CommanderModal from '../CommanderModal/CommanderModal';
 import ColorTable from '../ColorTable/ColorTable';
+import CommanderCard from '../CommanderCard/CommanderCard';
 
 function StatTable({type, data}){
     const [displayCount, setDisplayCount] = useState(10);
@@ -128,37 +129,22 @@ function StatTable({type, data}){
       );
     };
 
-    const renderCommanderExpanded = (commanderName) => {
-      const imageUrl = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(commanderName)}&format=image&version=art_crop`;
+    const renderCommanderExpanded = (commanderName, rowIndex) => {
+      // Create a participant object structure that CommanderCard expects
+      const participant = {
+        commander_name: commanderName,
+        player_name: 'Commander Stats', // Generic label for stats view
+        player_id: `commander-${rowIndex}` // Unique identifier for this commander row
+      };
       
       return (
         <div className="stat-commander-expanded">
-          <div className="stat-commander-image-section">
-            <div 
-              className="stat-commander-image-container clickable"
-              onClick={() => openCommanderModal(commanderName)}
-            >
-              <img
-                src={imageUrl}
-                alt={commanderName}
-                className="stat-commander-image"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <div className="stat-commander-placeholder" style={{display: 'none'}}>
-                <span>Image not available</span>
-              </div>
-              <div className="stat-click-overlay">
-                <span>Click to view details</span>
-              </div>
-            </div>
-          </div>
-          <div className="stat-commander-info">
-            <h4>{commanderName}</h4>
-            <p>Click the image to view card details and external links</p>
-          </div>
+          <CommanderCard
+            participant={participant}
+            isWinner={false}
+            isExpanded={true}
+            onToggleExpansion={() => {}} // No-op since it's already expanded in stats context
+          />
         </div>
       );
     };
@@ -202,7 +188,7 @@ function StatTable({type, data}){
                 className={className}
                 expandedContent={
                   isCommander 
-                    ? renderCommanderExpanded(displayName)
+                    ? renderCommanderExpanded(displayName, index)
                     : isPlayer 
                       ? renderPlayerExpanded(displayName, index)
                       : null

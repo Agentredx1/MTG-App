@@ -8,6 +8,7 @@ export default function PlayerPage() {
   const { name } = useParams();
   const [playerData, setPlayerData] = useState([]);
   const [commanderData, setCommanderData] = useState([]);
+  const [showHeadToHead, setShowHeadToHead] = useState(false);
 
   // Your existing useEffect hooks...
   useEffect(() => {
@@ -58,7 +59,10 @@ export default function PlayerPage() {
       <StatTable type="player" data={playerData}/>
       <StatTable type="commander" data={commanderData}/>
       <ColorTable name={name}/>
-      <HeadToHead playerName={name}/>
+      <button onClick={() => setShowHeadToHead(!showHeadToHead)}>
+        {showHeadToHead ? 'Hide Head-to-Head' : 'Show Head-to-Head'}
+      </button>
+      {showHeadToHead && <HeadToHead playerName={name}/>}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AddGameForm from "./pages/AddGameForm.jsx";
 import Navigation from "./components/Navigation/Navigation.jsx";
-import { Hero } from './components/Hero/Hero.jsx';
+import Home from './pages/Home.jsx';
 import Metrics from './pages/Metrics.jsx';
 import { GameMetaProvider } from './contexts/GameMetaProvider';
 import PlayerPage from './pages/PlayerPage.jsx';
@@ -16,7 +16,7 @@ function App() {
         <BrowserRouter>
           <Navigation/>
             <Routes>
-              <Route path="/" element={<Hero/>} />
+              <Route path="/" element={<Home/>} />
               <Route path="/AddGameForm" element={<AddGameForm />}/>
               <Route path="/Metrics" element={<Metrics/>}/>
               <Route path="/Metrics/:name" element={<PlayerPage/>}/>
