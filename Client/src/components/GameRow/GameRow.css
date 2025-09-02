@@ -55,7 +55,10 @@
 
 /* Expanded Content */
 .expanded-content {
-  padding: 0;
+  padding: 1rem;
+  /* Ensure container can expand to fit content */
+  min-height: 0;
+  overflow: visible;
 }
 
 .commander-images {
@@ -63,7 +66,9 @@
   gap: 1rem;
   width: 100%;
   align-items: flex-start;
-  overflow: hidden;
+  /* Remove overflow hidden to allow expanded details */
+  overflow: visible;
+  min-height: 0;
 }
 
 /* Fix: explicitly choose what to animate on the card */
@@ -80,9 +85,17 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Keep your “shrink others when one expands” rule */
+/* Enhanced shrinking behavior for expanded cards */
 .commander-images:has(.commander-card.expanded) .commander-card:not(.expanded) {
-  flex: 0.5;
+  flex: 0.3; /* Shrink more aggressively to give expanded card more room */
+  min-width: 8rem; /* Maintain minimum readable width */
+}
+
+/* Ensure expanded cards can grow to fit content */
+.commander-images .commander-card.expanded {
+  flex: 2.5; /* Give even more space for text content */
+  min-width: 20rem; /* Ensure minimum width for readable text */
+  max-width: none; /* Remove any width constraints */
 }
 
 /* Mobile adjustments */
@@ -113,6 +126,19 @@
   
   .expanded-content {
     padding: 1rem;
+    overflow: visible;
+  }
+  
+  /* Mobile: Allow expanded cards to take full width */
+  .commander-images:has(.commander-card.expanded) .commander-card:not(.expanded) {
+    flex: none; /* Reset flex behavior on mobile */
+    min-width: auto;
+  }
+  
+  .commander-images .commander-card.expanded {
+    flex: none; /* Reset flex behavior on mobile */
+    width: 100%; /* Take full width when expanded on mobile */
+    min-width: unset; /* Remove minimum width constraint on mobile */
   }
 }
 

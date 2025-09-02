@@ -1,205 +1,317 @@
+/*
+ * CommanderCard Component CSS
+ * 
+ * Design Goals:
+ * - Dynamic sizing with fluid responsive design
+ * - Performance-optimized with GPU acceleration
+ * - Smooth hardware-accelerated transitions
+ * - Maintainable modular architecture
+ */
+
+/* ==========================================================================
+   CRITICAL STYLES - Load First
+   ========================================================================== */
+
+/* Base component container with fluid sizing */
 .commander-card {
+  /* Layout: Flexible container that adapts to parent */
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0; /* Prevent flex overflow */
+  
+  /* Sizing: Fluid and responsive */
+  width: 100%;
+  max-width: 100%;
+  
+  /* Visual: Clean card appearance */
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: clamp(0.5rem, 2vw, 0.75rem);
   overflow: hidden;
   box-shadow: var(--shadow);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Interaction: Smooth cursor feedback */
   cursor: pointer;
-  flex: 1;
-  min-width: 0;
-  align-self: flex-start;
+  
+  /* Performance: GPU-accelerated properties only */
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force GPU layer */
+  
+  /* Transitions: Hardware-accelerated */
+  transition: 
+    transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.commander-left {
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  width: 100%;
-}
+/* ==========================================================================
+   LAYOUT STATES - Collapsed vs Expanded
+   ========================================================================== */
 
+/* Expanded state: Horizontal layout for desktop */
 .commander-card.expanded {
   flex-direction: row;
-  flex: 1.5;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 0;
-  min-width: 0;
-  max-width: 100%;
+  min-height: clamp(12rem, 20vh, 16rem);
 }
 
-.commander-card.expanded .commander-left {
-  flex-shrink: 0;
-  width: 200px;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.commander-card:not(.expanded) .commander-left {
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+/* Winner state: Enhanced visual feedback */
 .commander-card.winner {
-  border: 2px solid var(--success);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 20%, transparent);
+  border-color: var(--success);
+  box-shadow: 
+    var(--shadow),
+    0 0 0 2px color-mix(in srgb, var(--success) 20%, transparent);
 }
 
+/* ==========================================================================
+   LEFT SECTION - Info and Image
+   ========================================================================== */
+
+.commander-left {
+  /* Layout: Flexible column */
+  display: flex;
+  flex-direction: column;
+  
+  /* Sizing: Responsive width */
+  flex-shrink: 0;
+  width: 100%;
+  
+  /* Performance: Optimize reflow */
+  contain: layout;
+}
+
+/* Expanded state: Fixed width for consistency */
+.commander-card.expanded .commander-left {
+  width: clamp(12rem, 25vw, 18rem);
+}
+
+/* ==========================================================================
+   CONTENT SECTIONS
+   ========================================================================== */
+
+/* Info section with fluid padding */
 .commander-info {
-  padding: 1rem;
+  padding: clamp(0.75rem, 3vw, 1.25rem);
   background: var(--surface);
 }
 
+/* Player name with responsive typography */
 .commander-player-name {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5em 0;
   color: var(--text);
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
   font-weight: 600;
+  line-height: 1.2;
+  
+  /* Performance: Avoid layout thrashing */
+  contain: layout;
 }
 
+/* Winner state styling */
 .commander-card.winner .commander-player-name {
   color: var(--success);
 }
 
+/* Commander name with adaptive sizing */
 .commander-card-name {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
   font-style: italic;
+  line-height: 1.3;
+  
+  /* Text handling */
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
+
+/* ==========================================================================
+   IMAGE CONTAINER - Responsive and Optimized
+   ========================================================================== */
 
 .commander-image-container {
   position: relative;
+  
+  /* Responsive aspect ratio */
   aspect-ratio: 5/3;
+  
+  /* Layout optimization */
   overflow: hidden;
   flex-shrink: 0;
-  max-width: 100%;
-  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Performance: Contain paint operations */
+  contain: layout style paint;
+  will-change: transform;
 }
 
-.commander-card.expanded .commander-image-container {
-  max-width: 100%;
-}
-
-.commander-details {
-  padding: 1rem;
-  background: var(--surface-alt);
-  font-size: 0.875rem;
-  color: var(--muted);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  opacity: 0;
-  min-height: 0;
-  overflow: hidden;
-  min-width: 0;
-  max-width: 300px;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.commander-details.visible {
-  opacity: 1;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.commander-card:not(.expanded) .commander-details {
-  border-top: 1px solid var(--border);
-}
-
-.commander-card.expanded .commander-details {
-  border-left: 1px solid var(--border);
-}
-
+/* Image with performance optimizations */
 .commander-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  
+  /* Performance: GPU acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+  
+  /* Smooth scaling transition */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* Hover effect: Subtle scale */
 .commander-card:hover .commander-image {
-  transform: scale(1.05);
+  transform: scale(1.02) translateZ(0);
 }
+
+/* ==========================================================================
+   INTERACTION OVERLAYS
+   ========================================================================== */
 
 .click-overlay {
+  /* Positioning */
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  inset: 0;
+  
+  /* Layout */
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  
+  /* Visual */
+  background: rgba(0, 0, 0, 0.7);
   color: white;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
   font-weight: 600;
   text-align: center;
+  
+  /* Performance */
+  opacity: 0;
+  will-change: opacity;
+  pointer-events: none;
+  
+  /* Smooth transition */
+  transition: opacity 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* Show overlay on hover */
 .commander-card:hover .click-overlay {
   opacity: 1;
 }
 
+/* Placeholder for missing images */
 .image-placeholder {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
+  
   aspect-ratio: 5/3;
   background: color-mix(in srgb, var(--surface) 70%, var(--muted));
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
   font-style: italic;
+  text-align: center;
+  padding: 1rem;
 }
 
-/* Card details styling */
-.loading-details, .error-details {
-  text-align: center;
+/* ==========================================================================
+   EXPANDED DETAILS SECTION
+   ========================================================================== */
+
+.commander-details {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  
+  /* Sizing: Ensure proper width constraints */
+  width: 100%;
+  min-width: 0; /* Allow shrinking */
+  max-width: 100%; /* Prevent overflow */
+  
+  /* Spacing */
+  padding: clamp(0.75rem, 3vw, 1.25rem);
+  
+  /* Visual */
+  background: var(--surface-alt);
+  border-left: 1px solid var(--border);
+  
+  /* Typography */
+  font-size: clamp(0.8rem, 2vw, 0.875rem);
+  color: var(--muted);
+  line-height: 1.4;
+  
+  /* Performance: Remove layout containment to allow proper text flow */
+  opacity: 0;
+  will-change: opacity, transform;
+  
+  /* Smooth reveal transition */
+  transition: 
+    opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s,
+    transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+  transform: translateX(-1rem) translateZ(0);
+}
+
+/* Visible state */
+.commander-details.visible {
+  opacity: 1;
+  transform: translateX(0) translateZ(0);
+}
+
+/* ==========================================================================
+   CARD DETAIL COMPONENTS
+   ========================================================================== */
+
+/* Loading and error states */
+.loading-details,
+.error-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 2rem;
   color: var(--muted);
   font-style: italic;
+  text-align: center;
 }
 
+/* Card header with flexible layout */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 
+/* Mana cost display */
 .mana-cost {
   display: flex;
   gap: 0.25rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
+/* CMC (Converted Mana Cost) */
 .cmc {
   font-weight: 600;
   color: var(--text);
-  font-size: 0.75rem;
+  font-size: clamp(0.7rem, 2vw, 0.75rem);
+  white-space: nowrap;
 }
 
+/* Card type line */
 .card-type {
   font-weight: 600;
   color: var(--text);
   margin-bottom: 0.75rem;
-  font-size: 0.875rem;
+  font-size: clamp(0.8rem, 2vw, 0.875rem);
+  line-height: 1.3;
 }
 
+/* Color identity section */
 .color-identity {
   margin-bottom: 0.75rem;
 }
@@ -207,28 +319,39 @@
 .color-identity strong {
   display: block;
   margin-bottom: 0.25rem;
-  font-size: 0.75rem;
+  font-size: clamp(0.7rem, 1.8vw, 0.75rem);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: var(--text);
 }
 
+/* Color symbols container */
 .color-symbols {
   display: flex;
   gap: 0.25rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
+/* Oracle text with optimized rendering */
 .oracle-text {
-  line-height: 1.4;
   flex: 1;
+  line-height: 1.5;
+  
+  /* Enhanced text wrapping */
   word-wrap: break-word;
   overflow-wrap: break-word;
-  height: auto;
-  min-height: fit-content;
+  word-break: break-word; /* Force long words to break */
+  hyphens: auto;
+  
+  /* Ensure proper width constraints */
   width: 100%;
+  min-width: 0;
   max-width: 100%;
-  overflow: hidden;
-  white-space: normal;
+  
+  /* Text alignment and spacing */
+  text-align: left;
+  white-space: normal; /* Ensure normal text flow */
 }
 
 .oracle-text p {
@@ -239,104 +362,113 @@
   margin-bottom: 0;
 }
 
-.oracle-text p:empty {
-  margin: 0;
-}
+/* ==========================================================================
+   MANA SYMBOLS - Responsive and Accessible
+   ========================================================================== */
 
-/* Mana pip styling */
+/* Mana pip images */
 .mana-pip {
-  width: 20px;
-  height: 20px;
+  width: clamp(1rem, 3vw, 1.25rem);
+  height: clamp(1rem, 3vw, 1.25rem);
   flex-shrink: 0;
   border-radius: 50%;
   object-fit: cover;
+  
+  /* Performance */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-/* Text fallback for non-color symbols */
+/* Text fallback for symbols */
 .mana-symbol-text {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  
+  width: clamp(1rem, 3vw, 1.25rem);
+  height: clamp(1rem, 3vw, 1.25rem);
   border-radius: 50%;
-  font-size: 0.6rem;
+  
+  font-size: clamp(0.6rem, 1.5vw, 0.7rem);
   font-weight: 700;
   text-align: center;
+  
   border: 1px solid var(--border);
   background: var(--surface-alt);
   color: var(--text);
   flex-shrink: 0;
 }
 
-/* Mobile adjustments */
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Tablet and mobile adjustments */
 @media (max-width: 768px) {
   .commander-card.expanded {
-    flex: none;
     flex-direction: column;
-    align-items: stretch;
+    min-height: auto;
   }
   
   .commander-card:not(.expanded) {
     flex-direction: row;
     align-items: center;
-    min-height: fit-content;
-  }
-  
-  .commander-left {
-    flex: 1;
-    padding: 0.75rem;
   }
   
   .commander-card:not(.expanded) .commander-left {
-    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
   }
   
   .commander-card.expanded .commander-left {
-    flex: none;
     width: 100%;
   }
   
-  .commander-image-container {
-    width: 80px;
+  .commander-card:not(.expanded) .commander-image-container {
+    width: 4rem;
+    height: 4rem;
     aspect-ratio: 1;
-    flex-shrink: 0;
+    border-radius: 0.5rem;
   }
   
-  .commander-card.expanded .commander-image-container {
-    width: 100%;
-    aspect-ratio: 5/3;
-  }
-  
-  .image-placeholder {
-    width: 80px;
+  .commander-card:not(.expanded) .image-placeholder {
+    width: 4rem;
+    height: 4rem;
     aspect-ratio: 1;
-    font-size: 0.8rem;
-  }
-  
-  .commander-card.expanded .image-placeholder {
-    width: 100%;
-    aspect-ratio: 5/3;
+    border-radius: 0.5rem;
+    font-size: 0.7rem;
   }
   
   .commander-details {
-    padding: 1rem;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    transform: translateY(-1rem) translateZ(0);
   }
   
-  .click-overlay {
-    font-size: 0.7rem;
-    padding: 0.25rem;
+  .commander-details.visible {
+    transform: translateY(0) translateZ(0);
   }
 }
 
-/* Motion sensitivity */
+/* Large screens: Enhanced spacing */
+@media (min-width: 1200px) {
+  .commander-card.expanded .commander-left {
+    width: clamp(14rem, 20vw, 20rem);
+  }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY - Motion and Contrast
+   ========================================================================== */
+
+/* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .commander-card,
   .commander-image,
   .click-overlay,
-  .commander-left {
+  .commander-details {
     transition: none !important;
-    transform: none !important;
     animation: none !important;
   }
   
@@ -344,13 +476,61 @@
     transform: none !important;
   }
   
-  .commander-card:hover .click-overlay {
-    opacity: 0 !important;
-  }
-  
   .commander-details {
     opacity: 1 !important;
     transform: none !important;
-    animation: none !important;
+  }
+  
+  .click-overlay {
+    opacity: 0 !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .commander-card {
+    border-width: 2px;
+  }
+  
+  .commander-card.winner {
+    border-width: 3px;
+  }
+  
+  .click-overlay {
+    background: rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* ==========================================================================
+   PERFORMANCE OPTIMIZATIONS
+   ========================================================================== */
+
+/* Optimize repaints for frequently changing elements */
+.commander-card,
+.commander-image,
+.commander-details,
+.click-overlay {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Container queries for future-proofing */
+@supports (container-type: inline-size) {
+  .commander-card {
+    container-type: inline-size;
+  }
+  
+  @container (max-width: 300px) {
+    .commander-info {
+      padding: 0.5rem;
+    }
+    
+    .commander-player-name {
+      font-size: 0.9rem;
+    }
+    
+    .commander-card-name {
+      font-size: 0.75rem;
+    }
   }
 }
